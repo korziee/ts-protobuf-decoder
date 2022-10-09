@@ -140,21 +140,9 @@ export function getDecodedFieldNumberToWireFormatMap(
 ): DecodedFieldNumberToWireFormatMap {
   const map: DecodedFieldNumberToWireFormatMap = {};
 
-  let cont = true;
   let byteIndex = 0;
 
-  let counter = 0;
-
-  while (cont) {
-    if (counter > 1000) {
-      throw new Error("bad, in loop");
-    }
-
-    if (typeof binary[byteIndex] === "undefined") {
-      cont = false;
-      break;
-    }
-
+  while (typeof binary[byteIndex] !== "undefined") {
     const type = parseFieldType(binary[byteIndex]);
     const parseFieldNumberResponse = parseFieldNumber(binary, byteIndex);
     const parseFieldValueResponse = parseFieldValue(
