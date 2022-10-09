@@ -1,13 +1,21 @@
+# TS Protobuf Decoder
+
+This is a WIP and currently only decodes LEN and VARINT wire types. It does not yet support full protobuf decoding (i.e. given a protofile + a binary, spits out useful and accurate data), only field number, wire type and wire type value decoding. I've been referring to this as "partial protobuf decoding".
+
 # TODO
 
 - [x] create a generic parseVarint func
 - [x] test each func individually.
 - [x] test and write the decoder
+- [ ] handle empty binaries
 - [ ] support large strings
 - [ ] support i32
 - [ ] support i64
 - [ ] support repeated
 - [ ] support nested messages
+- [ ] fully decode VARINTs
+- [ ] fully decode LENs
+- [ ] turn into CLI tool
 
 # Learnings
 
@@ -17,6 +25,7 @@
 - `xxd` is a cool tool, lets you decode the raw binary bits from a binary. (i.e. `xxd -b output.bin` => `00000000: 00101000 00000001`)
 - `hexdump` was very useful, `hexdump -C your-bin.bin` gives you an easyish to read byte separated print out.\
 - `protoc` is not well documented
+- tdd always so fun
 
 # Dev
 
