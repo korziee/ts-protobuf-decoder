@@ -1,0 +1,1 @@
+echo data.txt | entr sh -c "echo '--- DATA --- ' && cat data.txt && echo "" && echo "" && ./encode.sh && ./dump.sh && echo '-------------------------- FIN --------------------------'"

@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+message MyMessage {
+  int32 my_int = 1;
+  int64 my_int64 = 2;
+  sint64 my_sint64 = 3;
+  int32 my_int_ten = 20;
+  string my_string = 4;
+  bool my_bool = 5;
+  int32 large_field_number = 2049;
+  bytes my_bytes = 10;
+}
+
+message TestFileMessage {
+  enum MyEnum {
+    MY_ENUM_ZERO = 0;
+    MY_ENUM_ONE = 1;
+    MY_ENUM_TWO = 2;
+  }
+
+  int32 my_int = 1;
+  string my_string = 10;
+  bool my_bool = 20;
+  MyEnum my_enum = 30;
+  bytes my_bytes = 40;
+}

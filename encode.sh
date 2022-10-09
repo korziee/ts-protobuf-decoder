@@ -1,0 +1,1 @@
+protoc --proto_path=$PWD --encode="MyMessage" $PWD/playground.proto < data.txt > ./output.bin
