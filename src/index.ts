@@ -120,15 +120,15 @@ export function parseFieldValue(
 
   if (type === "LEN") {
     const bytes = [];
-    let length = binary[currentByteIndex];
+    const { nextByteIndex, value } = parseVarint(binary, currentByteIndex);
 
-    for (let i = 0; i < length; i += 1) {
-      bytes.push(binary[currentByteIndex + i + 1]);
+    for (let i = 0; i < value; i += 1) {
+      bytes.push(binary[nextByteIndex + i]);
     }
 
     return {
       value: bytes,
-      nextByteIndex: currentByteIndex + length + 1,
+      nextByteIndex: nextByteIndex + value,
     };
   }
 

@@ -197,7 +197,23 @@ describe("parseFieldValue", () => {
       });
     });
 
-    it.todo("should parse len values of more than 256 bytes");
+    it("should parse len values of more than 127 bytes", () => {
+      const str =
+        "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+      expect(
+        parseFieldValue(
+          Buffer.concat([Buffer.from([0xd0, 0x01]), Buffer.from(str)]),
+          0,
+          "LEN"
+        )
+      ).toStrictEqual({
+        nextByteIndex: 210,
+        value:
+          "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"
+            .split("")
+            .map((a) => a.charCodeAt(0)),
+      });
+    });
 
     it("should parse multi byte len values", () => {
       expect(

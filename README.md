@@ -8,7 +8,7 @@ This is a WIP and currently only decodes LEN and VARINT wire types. It does not 
 - [x] test each func individually.
 - [x] test and write the decoder
 - [ ] handle empty binaries
-- [ ] support large strings
+- [x] support large string lengths (> 127 length)
 - [ ] support i32
 - [ ] support i64
 - [ ] support repeated
