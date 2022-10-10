@@ -287,4 +287,10 @@ describe("getDecodedFieldNumberToWireFormatMap", () => {
       },
     });
   });
+
+  test("should support empty binaries", async () => {
+    const binaryLocation = await generate({});
+    const binary = await readFile(binaryLocation);
+    expect(getDecodedFieldNumberToWireFormatMap(binary)).toStrictEqual({});
+  });
 });

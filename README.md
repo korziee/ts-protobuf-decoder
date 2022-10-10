@@ -7,7 +7,7 @@ This is a WIP and currently only decodes LEN and VARINT wire types. It does not 
 - [x] create a generic parseVarint func
 - [x] test each func individually.
 - [x] test and write the decoder
-- [ ] handle empty binaries
+- [x] handle empty binaries
 - [x] support large string lengths (> 127 length)
 - [ ] support i32
 - [ ] support i64
