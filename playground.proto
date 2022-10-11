@@ -18,6 +18,9 @@ message MyMessage {
   float my_float = 6;
   fixed32 my_fixed32 = 7;
   sfixed32 my_sfixed32 = 8;
+  double my_double = 9;
+  fixed64 my_fixed64 = 11;
+  sfixed64 my_sfixed64 = 12;
 }
 
 message TestFileMessage {
@@ -28,7 +31,9 @@ message TestFileMessage {
   }
 
   int32 my_int = 1;
+  double my_double = 5;
   string my_string = 10;
+  fixed32 my_fixed32 = 15;
   bool my_bool = 20;
   MyEnum my_enum = 30;
   bytes my_bytes = 40;

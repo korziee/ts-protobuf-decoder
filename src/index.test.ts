@@ -117,7 +117,7 @@ describe("parseFieldNumber", () => {
 
 describe("parseFieldValue", () => {
   test("should throw on unsupported types for now", () => {
-    expect(() => parseFieldValue(Buffer.from([]), 0, "I64")).toThrow();
+    // expect(() => parseFieldValue(Buffer.from([]), 0, "I64")).toThrow();
   });
 
   describe("varint", () => {
@@ -273,6 +273,39 @@ describe("parseFieldValue", () => {
       });
     });
   });
+
+  describe("i64", () => {
+    it("should parse i64 double values", () => {
+      const buf = Buffer.from([0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x39, 0x40]);
+
+      expect(parseFieldValue(buf, 0, "I64")).toStrictEqual({
+        nextByteIndex: 8,
+        value: [...buf],
+      });
+    });
+
+    it("should parse i64 fixed64 values", () => {
+      const buffer = Buffer.from([
+        0x19, 0x00, 0x00, 0x00, 0x19, 0x00, 0x00, 0x00,
+      ]);
+
+      expect(parseFieldValue(buffer, 0, "I64")).toStrictEqual({
+        nextByteIndex: 8,
+        value: [...buffer],
+      });
+    });
+
+    it("should parse i64 sfixed64 values", () => {
+      const buffer = Buffer.from([
+        0xec, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+      ]);
+
+      expect(parseFieldValue(buffer, 0, "I64")).toStrictEqual({
+        nextByteIndex: 8,
+        value: [...buffer],
+      });
+    });
+  });
 });
 
 describe("getDecodedFieldNumberToWireFormatMap", () => {
@@ -296,6 +329,8 @@ describe("getDecodedFieldNumberToWireFormatMap", () => {
       my_int: 10,
       my_string: "hello world foo bar",
       my_bool: true,
+      my_fixed32: 12345678,
+      my_double: 25.2,
     });
 
     const binary = await readFile(binaryLocation);
@@ -305,9 +340,19 @@ describe("getDecodedFieldNumberToWireFormatMap", () => {
         type: "VARINT",
         value: 10,
       },
+      5: {
+        type: "I64",
+        value: [
+          ...Buffer.from([0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x39, 0x40]),
+        ],
+      },
       10: {
         type: "LEN",
         value: [...Buffer.from("hello world foo bar").values()],
+      },
+      15: {
+        type: "I32",
+        value: [...Buffer.from([0x4e, 0x61, 0xbc, 0x00])],
       },
       20: {
         type: "VARINT",

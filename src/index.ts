@@ -132,6 +132,7 @@ export function parseFieldValue(
     };
   }
 
+  // regardless of value (signed, float, fixed), always a fixed four bytes
   if (type === "I32") {
     return {
       nextByteIndex: currentByteIndex + 4,
@@ -140,6 +141,22 @@ export function parseFieldValue(
         binary[currentByteIndex + 1],
         binary[currentByteIndex + 2],
         binary[currentByteIndex + 3],
+      ],
+    };
+  }
+
+  if (type === "I64") {
+    return {
+      nextByteIndex: currentByteIndex + 8,
+      value: [
+        binary[currentByteIndex],
+        binary[currentByteIndex + 1],
+        binary[currentByteIndex + 2],
+        binary[currentByteIndex + 3],
+        binary[currentByteIndex + 4],
+        binary[currentByteIndex + 5],
+        binary[currentByteIndex + 6],
+        binary[currentByteIndex + 7],
       ],
     };
   }
