@@ -117,7 +117,6 @@ describe("parseFieldNumber", () => {
 
 describe("parseFieldValue", () => {
   test("should throw on unsupported types for now", () => {
-    expect(() => parseFieldValue(Buffer.from([]), 0, "I32")).toThrow();
     expect(() => parseFieldValue(Buffer.from([]), 0, "I64")).toThrow();
   });
 
@@ -242,6 +241,35 @@ describe("parseFieldValue", () => {
       ).toStrictEqual({
         nextByteIndex: 13,
         value: [...Buffer.from("foo!bar_baz;").values()],
+      });
+    });
+  });
+
+  describe("i32", () => {
+    it("should parse i32 float values", () => {
+      const buf = Buffer.from([0x9a, 0x99, 0xc9, 0x41]);
+
+      expect(parseFieldValue(buf, 0, "I32")).toStrictEqual({
+        nextByteIndex: 4,
+        value: [...buf],
+      });
+    });
+
+    it("should parse i32 fixed32 values", () => {
+      const buffer = Buffer.from([0x19, 0x00, 0x00, 0x00]);
+
+      expect(parseFieldValue(buffer, 0, "I32")).toStrictEqual({
+        nextByteIndex: 4,
+        value: [...buffer],
+      });
+    });
+
+    it("should parse i32 sfixed32 values", () => {
+      const buffer = Buffer.from([0xe7, 0xff, 0xff, 0xff]);
+
+      expect(parseFieldValue(buffer, 0, "I32")).toStrictEqual({
+        nextByteIndex: 4,
+        value: [...buffer],
       });
     });
   });

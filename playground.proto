@@ -1,6 +1,11 @@
 syntax = "proto3";
 
 message MyMessage {
+  message NestedMessage {
+    int32 value = 1;
+    string str_value = 2;
+  }
+
   int32 my_int = 1;
   int64 my_int64 = 2;
   sint64 my_sint64 = 3;
@@ -9,6 +14,10 @@ message MyMessage {
   bool my_bool = 5;
   int32 large_field_number = 2049;
   bytes my_bytes = 10;
+  NestedMessage my_nested_message = 15;
+  float my_float = 6;
+  fixed32 my_fixed32 = 7;
+  sfixed32 my_sfixed32 = 8;
 }
 
 message TestFileMessage {

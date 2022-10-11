@@ -132,6 +132,18 @@ export function parseFieldValue(
     };
   }
 
+  if (type === "I32") {
+    return {
+      nextByteIndex: currentByteIndex + 4,
+      value: [
+        binary[currentByteIndex],
+        binary[currentByteIndex + 1],
+        binary[currentByteIndex + 2],
+        binary[currentByteIndex + 3],
+      ],
+    };
+  }
+
   throw new Error(`Cannot parse "${type}" wire type yet.`);
 }
 
@@ -151,12 +163,12 @@ export function getDecodedFieldNumberToWireFormatMap(
       type
     );
 
-    byteIndex = parseFieldValueResponse.nextByteIndex;
-
     map[parseFieldNumberResponse.fieldNumber] = {
       type,
       value: parseFieldValueResponse.value,
     };
+
+    byteIndex = parseFieldValueResponse.nextByteIndex;
   }
 
   return map;
