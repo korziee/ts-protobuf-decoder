@@ -9,13 +9,50 @@ This is a WIP and currently only decodes LEN and VARINT wire types. It does not 
 - [x] test and write the decoder
 - [x] handle empty binaries
 - [x] support large string lengths (> 127 length)
-- [ ] support i32
-- [ ] support i64
+- [x] support large strings
+- [x] support i32
+- [x] support i64
 - [ ] support repeated
 - [ ] support nested messages
 - [ ] fully decode VARINTs
 - [ ] fully decode LENs
 - [ ] turn into CLI tool
+
+# TODO [CHAR|LEXER|PARSER]
+
+https://developers.google.com/protocol-buffers/docs/proto3 - easy
+https://developers.google.com/protocol-buffers/docs/reference/proto3-spec - hard
+https://developers.google.com/protocol-buffers/docs/text-format-spec - mostly about encoding into proto
+
+https://supunsetunga.medium.com/writing-a-parser-getting-started-44ba70bb6cc9 - good succinct definitions on the steps to a parser
+
+- [x] define the lexical grammar
+- [x] define the AST
+- [x] define the interface for the reader
+- [x] define the interface for the lexer
+- [x] define the interface for the parser
+- [x] write all the tests
+- [ ] write the char reader
+- [ ] write the lexer
+- [ ] write the parser
+
+## MVP Support
+
+- [ ] syntax
+- [ ] top level messages
+- [ ] int_32
+- [ ] string
+- [ ] bool
+
+## Maybe
+
+- [ ] comments
+- [ ] repeated
+- [ ] nested messages
+- [ ] sharing types from other messages (`Foo.Bar.Baz my_baz = 1`)
+- [ ] imports
+- [ ] oneof
+- [ ] maps
 
 # Learnings
 
