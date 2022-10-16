@@ -344,7 +344,7 @@ describe("Parser", () => {
         body: [
           {
             type: "field",
-            name: "my_int",
+            name: "my_first_int",
             fieldType: "int32",
             number: 1,
           },
@@ -352,7 +352,7 @@ describe("Parser", () => {
       },
       {
         type: "message",
-        name: "MyFirstMessage",
+        name: "MySecondMessage",
         body: [],
       },
       {
