@@ -56,15 +56,20 @@ export class Reader {
   }
 
   public consume(characters: number = 1): string {
-    throw new Error("not implemented");
+    const result = this.source.slice(0, characters);
+    this.source = this.source.substring(characters);
+
+    return result;
   }
 
   public peek(characters: number = 1): string {
-    throw new Error("not implemented");
+    const result = this.source.slice(0, characters);
+
+    return result;
   }
 
   public eof(): boolean {
-    throw new Error("not implemented");
+    return this.peek() === "";
   }
 }
 
