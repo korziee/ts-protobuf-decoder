@@ -1,7 +1,7 @@
 import { describe, expect, test } from "@jest/globals";
 import { AST, Lexer, Parser, Reader } from "./parser";
 
-describe.skip("Reader", () => {
+describe("Reader", () => {
   describe("consume", () => {
     test("should continually return the next character in the source by default", () => {
       const reader = new Reader("foo bar baz");
@@ -90,7 +90,7 @@ describe("Lexer", () => {
   });
 
   describe("consume", () => {
-    it.only("should consume as many tokens as required", () => {
+    it("should consume as many tokens as required", () => {
       const lexer = new Lexer('syntax = "proto3";');
 
       expect(lexer.consume(2)).toStrictEqual([
@@ -109,7 +109,7 @@ describe("Lexer", () => {
       it("should consume the syntax keyword", () => {
         const lexer = new Lexer('syntax = "proto3";');
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "keyword",
           value: "syntax",
         });
@@ -118,7 +118,7 @@ describe("Lexer", () => {
       it("should consume the message keyword", () => {
         const lexer = new Lexer("message NestedMessage {");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "keyword",
           value: "message",
         });
@@ -127,7 +127,7 @@ describe("Lexer", () => {
       it("should consume the int32 keyword", () => {
         const lexer = new Lexer("int32 my_int = 1;");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "keyword",
           value: "int32",
         });
@@ -136,7 +136,7 @@ describe("Lexer", () => {
       it("should consume the bool keyword", () => {
         const lexer = new Lexer("bool my_bool = 1;");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "keyword",
           value: "bool",
         });
@@ -145,7 +145,7 @@ describe("Lexer", () => {
       it("should consume the string keyword", () => {
         const lexer = new Lexer("string my_string = 1;");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "keyword",
           value: "string",
         });
@@ -154,9 +154,9 @@ describe("Lexer", () => {
 
     describe("token:operator", () => {
       it("should consume the assignment operator", () => {
-        const lexer = new Lexer(" = 1");
+        const lexer = new Lexer("= 1");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "operator",
           value: "=",
         });
@@ -165,27 +165,27 @@ describe("Lexer", () => {
 
     describe("token:deliminator", () => {
       it("should consume the left curly deliminator", () => {
-        const lexer = new Lexer(" {\nmessage");
+        const lexer = new Lexer("{\nmessage");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "deliminator",
           value: "{",
         });
       });
 
       it("should consume the right curly deliminator", () => {
-        const lexer = new Lexer(" }\nmessage {");
+        const lexer = new Lexer("}\nmessage {");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "deliminator",
           value: "}",
         });
       });
 
       it("should consume the semicolon deliminator", () => {
-        const lexer = new Lexer(" ;\nmessage");
+        const lexer = new Lexer(";\nmessage");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "deliminator",
           value: ";",
         });
@@ -196,7 +196,7 @@ describe("Lexer", () => {
       it("should consume single letter identifiers", () => {
         const lexer = new Lexer("myval = 1;");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "identifier",
           value: "myval",
         });
@@ -205,7 +205,7 @@ describe("Lexer", () => {
       it("should consume words split by underscore identifiers", () => {
         const lexer = new Lexer("my_val = 1;");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "identifier",
           value: "my_val",
         });
@@ -216,7 +216,7 @@ describe("Lexer", () => {
       it("should consume single digit integer literals", () => {
         const lexer = new Lexer("1;");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "integer-literal",
           value: 1,
         });
@@ -225,7 +225,7 @@ describe("Lexer", () => {
       it("should consume multi digit integer literals", () => {
         const lexer = new Lexer("123123;");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "integer-literal",
           value: 123123,
         });
@@ -236,7 +236,7 @@ describe("Lexer", () => {
       it("should consume string literals", () => {
         const lexer = new Lexer(`"proto3";`);
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "string-literal",
           value: "proto3",
         });
@@ -247,7 +247,7 @@ describe("Lexer", () => {
       it("should return with an eof token if at EOF", () => {
         const lexer = new Lexer("");
 
-        expect(lexer.consume()).toBe({
+        expect(lexer.consume()).toStrictEqual({
           type: "eof",
         });
       });

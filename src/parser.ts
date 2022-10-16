@@ -75,6 +75,15 @@ export class Reader {
   public eof(): boolean {
     return this.peek() === "";
   }
+
+  public getCurrentSource(): string {
+    return this.source;
+  }
+
+  // bit of a hack, but essentially allows lexer to "undo" changes when the peek method actually consumes from the character stream.
+  public setCurrentSource(newSource: string) {
+    this.source = newSource;
+  }
 }
 
 export class Lexer {
@@ -129,11 +138,11 @@ export class Lexer {
     }
 
     if (this.isIntegerLiteral(value)) {
-      return { type: "integer-literal", value: parseInt(value, 2) };
+      return { type: "integer-literal", value: parseInt(value, 10) };
     }
 
     if (this.isStringLiteral(value)) {
-      return { type: "string-literal", value };
+      return { type: "string-literal", value: value.replaceAll('"', "") };
     }
 
     if (this.isOperator(value)) {
@@ -153,7 +162,13 @@ export class Lexer {
   public peek(tokens: 1): Token;
   public peek(tokens?: never): Token;
   public peek(tokens: number = 1): Token | Token[] {
-    throw new Error("not implemented");
+    const sourceCopy = this.reader.getCurrentSource();
+
+    const res = this.consume(tokens);
+
+    this.reader.setCurrentSource(sourceCopy);
+
+    return res;
   }
 
   public consume(tokens: number): Token[];
@@ -165,13 +180,29 @@ export class Lexer {
     for (let i = 0; i < tokens; i += 1) {
       let chars = "";
 
-      // consume chars
-      while (!this.isWhitespace(this.reader.peek())) {
-        throw new Error("here");
-        chars += this.reader.consume();
+      if (this.reader.eof()) {
+        // we're done here.
+        tokes.push({
+          type: "eof",
+        });
+        break;
       }
 
-      throw new Error(chars);
+      if (this.isDeliminator(this.reader.peek())) {
+        chars += this.reader.consume();
+        tokes.push(this.getToken(chars));
+        // we can stop here safely.
+        continue;
+      }
+
+      // consume chars
+      while (
+        !this.isWhitespace(this.reader.peek()) &&
+        !this.isDeliminator(this.reader.peek()) &&
+        !this.reader.eof()
+      ) {
+        chars += this.reader.consume();
+      }
 
       // consume whitespace so next run through is clean
       while (this.isWhitespace(this.reader.peek())) {
