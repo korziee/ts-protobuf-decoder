@@ -190,3 +190,20 @@ export function getDecodedFieldNumberToWireFormatMap(
 
   return map;
 }
+
+type Message = {
+  name: string;
+  fields: [];
+};
+
+export class Decoder {
+  constructor(private binary: Buffer, private protoDefinitions: string) {}
+
+  public decodeMessage(message: string): Message {
+    throw new Error("unimplemented");
+  }
+}
+
+// a binary -> partially decoded wire type
+// a binary + proto -> partially decoded wire type
+// a binary + proto + message name -> decoded message
