@@ -1,8 +1,8 @@
 # TS Protobuf Decoder
 
-This is a WIP and currently only decodes (LEN, VARINT, ) wire types. It does not yet support full protobuf decoding (i.e. given a protofile + a binary, spits out useful and accurate data), only field number, wire type and wire type value decoding. I've been referring to this as "partial protobuf decoding".
+This project implements a protobuf wire-type decoder and a parser (so far). The wire-type decoder essentially converts the message binary into a wire-type + field number combo. The parser is a mostly (WIP) to spec protobuf parser based on the language format defined [here](https://developers.google.com/protocol-buffers/docs/reference/proto3-spec).
 
-This is still a WIP, support status by component:
+This still a WIP. See below for more info on where its at
 
 ## Partial Decoding Support (decodes and segments the binary)
 
