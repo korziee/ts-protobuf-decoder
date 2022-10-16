@@ -1,58 +1,59 @@
 # TS Protobuf Decoder
 
-This is a WIP and currently only decodes LEN and VARINT wire types. It does not yet support full protobuf decoding (i.e. given a protofile + a binary, spits out useful and accurate data), only field number, wire type and wire type value decoding. I've been referring to this as "partial protobuf decoding".
+This is a WIP and currently only decodes (LEN, VARINT, ) wire types. It does not yet support full protobuf decoding (i.e. given a protofile + a binary, spits out useful and accurate data), only field number, wire type and wire type value decoding. I've been referring to this as "partial protobuf decoding".
 
-# TODO
+This is still a WIP, support status by component:
 
-- [x] create a generic parseVarint func
-- [x] test each func individually.
-- [x] test and write the decoder
-- [x] handle empty binaries
-- [x] support large string lengths (> 127 length)
-- [x] support large strings
-- [x] support i32
-- [x] support i64
-- [ ] support repeated
-- [ ] support nested messages
-- [ ] fully decode VARINTs
-- [ ] fully decode LENs
+## Partial Decoding Support (decodes and segments the binary)
+
+### Wire Types
+
+- [x] LEN
+- [x] VARINT
+- [x] I32
+- [x] I64
+- [ ] SGROUP (will never support)
+- [ ] EGROUP (will never support)
+
+### Functionality
+
+- [ ] repeated
+- [ ] packed
+
+## Parser Support
+
+- [x] syntax
+- [x] top level messages
+- [ ] top level enum fields
+- [x] bool message field
+- [x] int32 message field
+- [x] string message field
+- [ ] nested message fields
+- [ ] shared message fields (accessing nested message from another message)
+- [ ] enum message field
+- [ ] oneof messaged field
+- [ ] map message field
+- [ ] packed fields
+- [ ] repeated fields
+- [ ] options
+- [ ] imports
+- [ ] comments
+
+## Decoding (e.g. binary to JSON)
+
+TBD
+
+# General TODO
+
 - [ ] turn into CLI tool
 
-# TODO [CHAR|LEXER|PARSER]
+# Notes/Resources
 
 https://developers.google.com/protocol-buffers/docs/proto3 - easy
 https://developers.google.com/protocol-buffers/docs/reference/proto3-spec - hard
 https://developers.google.com/protocol-buffers/docs/text-format-spec - mostly about encoding into proto
 
 https://supunsetunga.medium.com/writing-a-parser-getting-started-44ba70bb6cc9 - good succinct definitions on the steps to a parser
-
-- [x] define the lexical grammar
-- [x] define the AST
-- [x] define the interface for the reader
-- [x] define the interface for the lexer
-- [x] define the interface for the parser
-- [x] write all the tests
-- [ ] write the char reader
-- [ ] write the lexer
-- [ ] write the parser
-
-## MVP Support
-
-- [ ] syntax
-- [ ] top level messages
-- [ ] int_32
-- [ ] string
-- [ ] bool
-
-## Maybe
-
-- [ ] comments
-- [ ] repeated
-- [ ] nested messages
-- [ ] sharing types from other messages (`Foo.Bar.Baz my_baz = 1`)
-- [ ] imports
-- [ ] oneof
-- [ ] maps
 
 # Learnings
 
@@ -62,7 +63,8 @@ https://supunsetunga.medium.com/writing-a-parser-getting-started-44ba70bb6cc9 - 
 - `xxd` is a cool tool, lets you decode the raw binary bits from a binary. (i.e. `xxd -b output.bin` => `00000000: 00101000 00000001`)
 - `hexdump` was very useful, `hexdump -C your-bin.bin` gives you an easyish to read byte separated print out.\
 - `protoc` is not well documented
-- tdd always so fun
+- tdd always so fun, like seriously so good.
+- reader/lexer/parser distinction made this a lot easier than I expected
 
 # Dev
 
