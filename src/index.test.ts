@@ -5,11 +5,13 @@ import { v4 as uuidv4 } from "uuid";
 import { promisify } from "node:util";
 const exec = promisify(execUsingCallback);
 import {
+  decodeMessage,
   getDecodedFieldNumberToWireFormatMap,
   parseFieldNumber,
   parseFieldType,
   parseFieldValue,
   parseVarint,
+  pullMessageMetadataFromAst,
 } from "./";
 import { readFile } from "node:fs/promises";
 
@@ -365,5 +367,166 @@ describe("getDecodedFieldNumberToWireFormatMap", () => {
     const binaryLocation = await generate({});
     const binary = await readFile(binaryLocation);
     expect(getDecodedFieldNumberToWireFormatMap(binary)).toStrictEqual({});
+  });
+});
+
+describe("pullMessageMetadataFromAst", () => {
+  test("should throw an error if the message does not exist in the AST", () => {
+    expect(() =>
+      pullMessageMetadataFromAst(
+        [{ type: "message", name: "MyMessage", body: [] }],
+        "messageThatDoesNotExist"
+      )
+    ).toThrow();
+  });
+
+  test("should return the correct metadata for a message", () => {
+    expect(
+      pullMessageMetadataFromAst(
+        [
+          {
+            type: "message",
+            name: "MyMessage",
+            body: [
+              {
+                name: "my_bool",
+                type: "field",
+                fieldType: "bool",
+                number: 1,
+              },
+              {
+                name: "my_string",
+                type: "field",
+                fieldType: "string",
+                number: 10,
+              },
+            ],
+          },
+        ],
+        "MyMessage"
+      )
+    ).toStrictEqual({
+      1: {
+        name: "my_bool",
+        type: "bool",
+        number: 1,
+      },
+      10: {
+        name: "my_string",
+        type: "string",
+        number: 10,
+      },
+    });
+  });
+});
+
+describe("decodeMessage", () => {
+  test("should support partial decoding", async () => {
+    const binaryLocation = await generate({
+      my_int: 10,
+    });
+
+    const binary = await readFile(binaryLocation);
+
+    expect(decodeMessage(binary)).toStrictEqual({
+      1: {
+        type: "VARINT",
+        value: 10,
+      },
+    });
+  });
+
+  test("should decode a message completely when provided a definition ast and message name", async () => {
+    const binaryLocation = await generate({
+      my_bool: true,
+      my_int: 1234,
+      my_string: "hello world foo bar baz",
+    });
+
+    const binary = await readFile(binaryLocation);
+
+    expect(
+      decodeMessage(
+        binary,
+        [
+          {
+            type: "message",
+            name: "TestFileMessage",
+            body: [
+              {
+                number: 1,
+                name: "my_int",
+                fieldType: "int32",
+                type: "field",
+              },
+              {
+                number: 10,
+                name: "my_string",
+                fieldType: "string",
+                type: "field",
+              },
+              {
+                number: 20,
+                name: "my_bool",
+                fieldType: "bool",
+                type: "field",
+              },
+            ],
+          },
+        ],
+        "TestFileMessage"
+      )
+    ).toStrictEqual({
+      my_bool: true,
+      my_int: 1234,
+      my_string: "hello world foo bar baz",
+    });
+  });
+
+  it("should insert the correct default values if they are on the message but not hte binary", async () => {
+    const binaryLocation = await generate({
+      // my_bool: true,
+      // my_int: 1234,
+      // my_string: "hello world foo bar baz",
+    });
+
+    const binary = await readFile(binaryLocation);
+
+    expect(
+      decodeMessage(
+        binary,
+        [
+          {
+            type: "message",
+            name: "TestFileMessage",
+            body: [
+              {
+                number: 1,
+                name: "my_int",
+                fieldType: "int32",
+                type: "field",
+              },
+              {
+                number: 10,
+                name: "my_string",
+                fieldType: "string",
+                type: "field",
+              },
+              {
+                number: 20,
+                name: "my_bool",
+                fieldType: "bool",
+                type: "field",
+              },
+            ],
+          },
+        ],
+        "TestFileMessage"
+      )
+    ).toStrictEqual({
+      my_bool: false,
+      my_int: 0,
+      my_string: "",
+    });
   });
 });

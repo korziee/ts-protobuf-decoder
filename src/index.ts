@@ -1,3 +1,5 @@
+import type { Ast } from "./parser";
+
 const WIRE_TYPE_MAP = {
   0: "VARINT",
   1: "I64",
@@ -187,6 +189,113 @@ export function getDecodedFieldNumberToWireFormatMap(
 
     byteIndex = parseFieldValueResponse.nextByteIndex;
   }
+
+  return map;
+}
+
+export type MessageFieldNumberMetadata = {
+  [key: number]: {
+    name: string;
+    number: number;
+    type: "string" | "bool" | "int32";
+    // todo: nested messages here?
+  };
+};
+
+export function pullMessageMetadataFromAst(
+  ast: Ast[],
+  messageName: string
+): MessageFieldNumberMetadata {
+  const message = ast.find(
+    (a) => a.type === "message" && a.name === messageName
+  );
+
+  if (typeof message === "undefined" || message.type !== "message") {
+    throw new Error(
+      `Could not find message: "${messageName}" in the provided AST`
+    );
+  }
+
+  const map: MessageFieldNumberMetadata = {};
+
+  message.body.forEach((b) => {
+    if (b.type === "field") {
+      map[b.number] = {
+        name: b.name,
+        number: b.number,
+        type: b.fieldType,
+      };
+    } else {
+      throw new Error(`message body type: "${b.type}" not yet supported`);
+    }
+  });
+
+  return map;
+}
+
+export function decodeMessage(
+  binary: Buffer,
+  protoDefinitionAst: Ast[],
+  messageName: string
+): Record<string, string | number | boolean>;
+// support for partial decoding
+export function decodeMessage(
+  binary: Buffer,
+  protoDefinitionAst?: Ast[],
+  messageName?: string
+): DecodedFieldNumberToWireFormatMap;
+export function decodeMessage(
+  binary: Buffer,
+  protoDefinitionAst?: Ast[],
+  messageName?: string
+):
+  | Record<string, string | number | boolean>
+  | DecodedFieldNumberToWireFormatMap {
+  const partialDecoding = getDecodedFieldNumberToWireFormatMap(binary);
+
+  if (
+    typeof protoDefinitionAst === "undefined" ||
+    typeof messageName === "undefined"
+  ) {
+    return partialDecoding;
+  }
+
+  const messageMeta = pullMessageMetadataFromAst(
+    protoDefinitionAst,
+    messageName
+  );
+
+  const map: Record<string, string | number | boolean> = {};
+
+  Object.values(messageMeta).forEach((meta) => {
+    const partiallyDecodedField = partialDecoding[meta.number];
+
+    let formattedValue: string | boolean | number;
+
+    switch (meta.type) {
+      case "string": {
+        // todo: fix
+        formattedValue = partiallyDecodedField?.value
+          ? Buffer.from(partiallyDecodedField.value as number[]).toString()
+          : "";
+        break;
+      }
+      case "bool": {
+        formattedValue = partiallyDecodedField?.value === 1;
+        break;
+      }
+      case "int32": {
+        // todo: narrow
+        formattedValue = (partiallyDecodedField?.value ?? 0) as number;
+        break;
+      }
+      default: {
+        throw new Error(`unknown proto type: ${meta.type}`);
+      }
+    }
+
+    map[meta.name] = formattedValue;
+  });
 
   return map;
 }

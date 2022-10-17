@@ -41,7 +41,7 @@ This still a WIP. See below for more info on where its at
 
 ## Decoding (e.g. binary to JSON)
 
-TBD
+- [x] support all things parser supports
 
 # General TODO
 

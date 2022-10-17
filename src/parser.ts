@@ -1,4 +1,4 @@
-// Define lexical grammer, will be used in the lexer
+// Define lexical grammar, will be used in the lexer
 
 type TokenCollection = {
   keyword: {
@@ -32,7 +32,7 @@ type TokenCollection = {
 
 type Token = TokenCollection[keyof TokenCollection];
 
-type ASTCollection = {
+type AstCollection = {
   syntax: {
     type: "syntax";
     value: "proto3";
@@ -40,7 +40,7 @@ type ASTCollection = {
   message: {
     type: "message";
     name: string;
-    body: Array<ASTCollection["message"] | ASTCollection["field"]>;
+    body: Array<AstCollection["message"] | AstCollection["field"]>;
   };
   field: {
     type: "field";
@@ -50,7 +50,7 @@ type ASTCollection = {
   };
 };
 
-export type AST = ASTCollection[keyof ASTCollection];
+export type Ast = AstCollection[keyof AstCollection];
 
 export class Reader {
   private originalSource: string;
@@ -229,7 +229,7 @@ export class Parser {
     this.lexer = new Lexer(this.proto);
   }
 
-  private consumeMessage(): ASTCollection["message"] {
+  private consumeMessage(): AstCollection["message"] {
     const [, name, openParen] = this.lexer.consume(3);
 
     if (name.type !== "identifier") {
@@ -239,7 +239,7 @@ export class Parser {
       throw new Error("expected left curly after message identifier");
     }
 
-    const ast: ASTCollection["message"] = {
+    const ast: AstCollection["message"] = {
       name: name.value,
       type: "message",
       body: [],
@@ -336,8 +336,8 @@ export class Parser {
     }
   }
 
-  public parse(): AST[] {
-    const rootAst: AST[] = [];
+  public parse(): Ast[] {
+    const rootAst: Ast[] = [];
 
     let lim = 0;
 

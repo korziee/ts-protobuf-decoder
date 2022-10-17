@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { AST, Lexer, Parser, Reader } from "./parser";
+import { Ast, Lexer, Parser, Reader } from "./parser";
 
 describe("Reader", () => {
   describe("consume", () => {
@@ -266,7 +266,7 @@ describe("Parser", () => {
         type: "syntax",
         value: "proto3",
       },
-    ] as AST[]);
+    ] as Ast[]);
   });
 
   it("should be able to parse an empty message", () => {
@@ -282,7 +282,7 @@ describe("Parser", () => {
         name: "MyMessage",
         body: [],
       },
-    ] as AST[]);
+    ] as Ast[]);
   });
 
   it("should be able to parse an message with fields", () => {
@@ -319,7 +319,7 @@ describe("Parser", () => {
           },
         ],
       },
-    ] as AST[]);
+    ] as Ast[]);
   });
 
   it("should be able to parse a proto definition with multiple messages", () => {
@@ -379,6 +379,6 @@ describe("Parser", () => {
           },
         ],
       },
-    ] as AST[]);
+    ] as Ast[]);
   });
 });
