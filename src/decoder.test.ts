@@ -12,7 +12,7 @@ import {
   parseFieldValue,
   parseVarint,
   pullMessageMetadataFromAst,
-} from "./";
+} from "./decoder";
 import { readFile } from "node:fs/promises";
 
 async function generate(

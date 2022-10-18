@@ -45,7 +45,7 @@ This still a WIP. See below for more info on where its at
 
 # General TODO
 
-- [ ] turn into CLI tool
+- [x] turn into primitive CLI tool
 
 # Notes/Resources
 
@@ -80,3 +80,10 @@ https://supunsetunga.medium.com/writing-a-parser-getting-started-44ba70bb6cc9 - 
 1. Run `./watch.sh` to start the watcher, encoder, and printer.
 2. Tweak the `playground.proto` file with the values and field numbers you want (watch script uses the `MyMessage` proto message).
 3. Tweak the `data.txt` file with the field name + values that you want to encode ).
+
+## Running the CLI tool
+
+`yarn ts-node src/index.ts --binary output.bin -m MyMessage -d ./playground.proto`
+
+> **Note**
+> rn it can only parse a proto file with limited fields, so the playground.proto file will fail.
